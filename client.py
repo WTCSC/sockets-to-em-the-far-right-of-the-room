@@ -9,10 +9,11 @@ def connect():
         client.connect((server_ip, 5000))
         print("Connected to server")
         player_id = client.recv(1024).decode()
+        print(player_id + '\n')
 
         while True:
             received = client.recv(1024).decode()
-            print(f"The prompt is \"{received[0]}\"")
+            print(f"The prompt is \"{received[0]}\"\n")
             hand = recieved[player_id]
 
             msg = input("Enter message: ")
