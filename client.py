@@ -58,4 +58,17 @@ def send_msg():
 
     client.close()
 
-connect()
+#def print_hand(hand):
+#    number = 1
+#    with open("answers.txt") as file:
+#        for card in hand.split('.'):
+#            card_text = file.read().split('\n')[18]
+#            print(f"{number}) {card_text}")
+#            number += 1
+#        print(file.read().split('\n'))
+#    return True
+#
+#
+##connect()
+#
+#print_hand('18.16.35.20.40')
