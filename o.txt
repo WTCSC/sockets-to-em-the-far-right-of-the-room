@@ -1,0 +1,23 @@
+server catch clients
+
+player sends "start"
+
+server sends "start" to all players
+
+player sends "draw" 5 times to server
+
+server sends "drew {card}" to player
+
+player sends "prompt" to server
+
+server returns "prompt ___" to players
+
+player sends "play {card}"
+
+server waits for all players to send card
+
+server sends "vote {prompt} {p1 card} {p2 cards} ..." to player
+
+player sends "vote {card number}" to server
+
+server sends "winner {winner}" to everyone
