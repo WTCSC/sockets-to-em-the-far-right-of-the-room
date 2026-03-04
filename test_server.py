@@ -23,11 +23,20 @@ while True:
     prompt = "Some prompt or whatever | 5.12.6.43.1 | 7.23.25.3.53 | 41.40.15.27.2 | 18.16.35.20.40"
     client.send(prompt.encode())
 
-    msg = client.recv(1024).decode()
-    if not msg:
+    pick = client.recv(1024).decode()
+    if not pick:
         break
-    print(f"Received: {msg}")
-    client.send(f"Server received: {msg}".encode())
+    print(f"Received: {pick}")
+
+    voting_cards = f"6.23.2.{pick}"
+    client.send(voting_cards.encode())
+
+    vote = client.recv(1024).decode()
+    if not vote:
+        break
+    print(f"Received: {vote}")
+
+
     sleep(1)
 
 client.close()

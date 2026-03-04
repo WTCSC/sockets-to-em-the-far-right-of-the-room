@@ -1,4 +1,5 @@
 import socket
+from hands import pick_card
 
 def connect():    
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -16,16 +17,27 @@ def connect():
 
         while True:
             received = client.recv(1024).decode().split(' | ')
+            num_of_players = len(received) - 1
+            print(num_of_players)
             print(f"The prompt is \"{received[0]}\"\n")
-            hand = received[player_id]
-            print(f"Your hand is {hand}")
 
-            msg = input("Enter message: ")
-            if not msg:
-                break
-            client.send(msg.encode())
-            response = client.recv(1024).decode()
-            print(f"{response}\n")
+            hand = received[player_id]
+            print("Please pick a card. Your hand is:")
+            picked_card = pick_card(hand)
+            client.send(picked_card.encode())
+
+            voting_cards = client.recv(1024).decode()
+            print("\nPlease pick a card to vote on:\n")
+            print(received[0])
+            vote = pick_card(voting_cards, num_of_players)
+            client.send(vote.encode())
+
+            #msg = input("Enter message: ")
+            #if not msg:
+            #    break
+            #client.send(msg.encode())
+            #response = client.recv(1024).decode()
+            #print(f"{response}\n")
 
         client.close()
 
@@ -58,17 +70,5 @@ def send_msg():
 
     client.close()
 
-#def print_hand(hand):
-#    number = 1
-#    with open("answers.txt") as file:
-#        for card in hand.split('.'):
-#            card_text = file.read().split('\n')[18]
-#            print(f"{number}) {card_text}")
-#            number += 1
-#        print(file.read().split('\n'))
-#    return True
-#
-#
-##connect()
-#
-#print_hand('18.16.35.20.40')
+
+connect()
