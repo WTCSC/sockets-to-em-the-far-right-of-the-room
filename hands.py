@@ -30,7 +30,6 @@ def pick_card(hand, num_of_cards = 5):
     print("\nWhat number card do you pick?: ", end = "")
     answer = input("").strip()
     integers = [str(num) for num in range(1, num_of_cards + 1)]
-    print(integers)
     while answer not in integers:
         print("That wasn't one of the options, please re-input: ", end = "")
         answer = input("").strip()
