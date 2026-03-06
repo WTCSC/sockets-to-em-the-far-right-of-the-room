@@ -4,7 +4,7 @@ def get_hands(num_of_players, banned, hands):
     if len(banned) > (71 - num_of_players):
         del banned[:50]
 
-    for player_num in range (0, num_of_players):
+    for player_num in range (num_of_players):
         hand = hands[player_num]
 
         while len(hand) < 5:
@@ -38,18 +38,17 @@ def pick_card(hand, num_of_cards = 5):
     return hand.split('.')[int(answer) - 1]
 
 def get_prompt(banned):
-    if len(banned) > (71 - num_of_players):
-        del banned[:50]
+    if len(banned) == 52:
+        del banned[:]
 
-    for player_num in range (0, num_of_players):
-        hand = hands[player_num]
+    int_prompt = -10
+    while int_prompt < 0:
+        potential_int = randint(0, 51)
+        if potential_int not in banned:
+            int_prompt = potential_int
+            banned.append(int_prompt)
 
-        while len(hand) < 5:
-            new_card = randint(0, 71)
-            if new_card not in banned:
-                hand.append(new_card)
-                banned.append(new_card)
+    with open("prompts.txt") as file:
+        str_prompt = file.read().split('\n')[int_prompt]
 
-        hands[player_num] = hand
-
-    return hands, banned
+    return str_prompt, banned

@@ -18,8 +18,7 @@ def connect():
         while True:
             received = client.recv(1024).decode().split(' | ')
             num_of_players = len(received) - 1
-            print(num_of_players)
-            print(f"The prompt is \"{received[0]}\"\n")
+            print(f"\nThe prompt is \"{received[0]}\"\n")
 
             hand = received[player_id]
             print("Please pick a card. Your hand is:")
@@ -31,6 +30,13 @@ def connect():
             print(received[0])
             vote = pick_card(voting_cards, num_of_players)
             client.send(vote.encode())
+
+            print(client.recv(1024).decode())
+
+            leave = client.recv(1024).decode()
+            if(leave == "break"):
+                client.close()
+                break
 
             #msg = input("Enter message: ")
             #if not msg:
