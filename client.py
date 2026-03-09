@@ -11,8 +11,8 @@ def connect():
         print("Connected to server")
         player_id = int(client.recv(1024).decode())
         print(f"{player_id}\n")
-        hello = 'Hello'
-        client.send(hello.encode())
+        more = input("would you like to start now?").strip()
+        client.send(more.encode())
         print(f"Your player id is {player_id}")
 
         while True:
@@ -20,8 +20,8 @@ def connect():
             num_of_players = len(received) - 1
             print(f"\nThe prompt is \"{received[0]}\"\n")
 
-            hand = received[player_id]
-            print("Please pick a card. Your hand is:")
+            hand = received[1]
+            print(f"Please pick a card. Your hand is:\n{hand}")
             picked_card = pick_card(hand)
             client.send(picked_card.encode())
 

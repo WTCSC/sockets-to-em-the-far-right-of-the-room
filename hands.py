@@ -43,7 +43,7 @@ def get_prompt(banned):
 
     int_prompt = -10
     while int_prompt < 0:
-        potential_int = randint(0, 51)
+        potential_int = randint(0, 50)
         if potential_int not in banned:
             int_prompt = potential_int
             banned.append(int_prompt)

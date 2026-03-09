@@ -62,17 +62,22 @@ def read_client(client, name):
     
 
 clients = []
+o=True
+while o:
+    #while not start:
+    print(start)
+    # Listen for connections
+    server.listen(1)
+    print("Waiting for connection...")
+    # Accept client connection
+    client, addr = server.accept()
+    print(f"Connected to {addr}")
+    client.send(f"{len(clients)+1}".encode())
+    clients.append(client)
+    s = client.recv(1024).decode().strip().lower()
+    if s == "y" or s == "yes":
+        o = False
 
-
-#while not start:
-print(start)
-# Listen for connections
-server.listen(1)
-print("Waiting for connection...")
-# Accept client connection
-client, addr = server.accept()
-print(f"Connected to {addr}")
-client.send("4".encode())
 
 
     #clients_num += 1
@@ -82,12 +87,12 @@ client.send("4".encode())
     #clients.append(client)
 
 
-clients_num = 4
+clients_num = len(clients)
 banned_cards = []
 banned_prompts = []
 hands = [[] for num in range(clients_num)]
 
-hello = client.recv(1024).decode()
+#hello = client.recv(1024).decode()
 
 # Game loop
 while True:
@@ -95,38 +100,49 @@ while True:
     hands, banned_cards = get_hands(clients_num, banned_cards, hands)
 
     message = prompt
-    for hand in hands:
+    picks = []
+    for i in range(0,len(hands)):
+        hand = hands[i]
         message += f" | {hand[0]}.{hand[1]}.{hand[2]}.{hand[3]}.{hand[4]}"
+        clients[i].send(message.encode())
+        pick = clients[i].recv(1024).decode()
+        if not pick:
+            break
+        print(f"Received: {pick}")
+        picks.append(pick)
+    
+    votes = []
+    voting_cards = ".".join(picks)
+    for client in clients:
+        client.send(voting_cards.encode())
 
-    client.send(message.encode())
+        vote = client.recv(1024).decode()
+        if not vote:
+            break
+        print(f"Received: {vote}")
+        votes.append(vote)
 
-    pick = client.recv(1024).decode()
-    if not pick:
-        break
-    print(f"Received: {pick}")
+    pod = {}
+    for vote in votes:
+        pod[vote] = pod.get(vote, 0) + 1
 
-    voting_cards = f"6.23.2.{pick}"
-    client.send(voting_cards.encode())
-
-    vote = client.recv(1024).decode()
-    if not vote:
-        break
-    print(f"Received: {vote}")
-
+    win = max(pod, key=pod.get)
     with open("answers.txt") as file:
-        card_text = file.read().split('\n')[int(vote)]
+        card_text = file.read().split('\n')[int(win)]
 
-    votes = f"The client voted for \"{card_text}\""
-    client.send(votes.encode())
+    winner = f"the winner is \"{card_text}\""
+    client.send(winner.encode())
 
     leave = input("Would you like to do another round? [y/n]: ")
     if leave.strip().lower() == 'n':
-        client.send("break".encode())
+        for client in clients:
+            client.send("break".encode())
         break
     else:
-        client.send(votes.econde("don't break"))
-
-client.close()
+        for client in clients:
+            client.send(votes.econde("don't break"))
+for client in clients:
+    client.close()
 server.close()
 
 
